@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .problem-page {
+        padding: 30px 30px;
+    }
+
+    .problem {
+        padding: 40px 30px;
+        background-color: #fff;
+        box-shadow: 3px 3px 6px #cbced1;
+        border-radius: 8px;
+    }
+
+    .problem-page .problem-head {
+        color: #242F9B;
+        margin-bottom: 40px;
+    }
+
+    .problem-page .fa-code {
+        color: #212529;
+        margin-right: 0px;
+    }
+</style>
+
+<div class="problem-page">
+
+    <div class="problem">
+
+        <h2 class="problem-head"> <i class="fa fa-code"></i> {{problem.name}} </h2>
+
+        {{problem.desc}}
+
+    </div>
+
+</div>
+
+{% endblock content %}

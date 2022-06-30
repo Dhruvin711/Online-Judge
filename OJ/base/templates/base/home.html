@@ -1,0 +1,92 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+
+    .home {
+        padding: 30px 30px;
+    }
+
+    .home1 {
+        padding: 5px 30px 3px;
+        background-color: #fff;
+        margin-bottom: 30px;
+        box-shadow: 3px 3px 6px #cbced1;
+        border-radius: 8px;
+    }
+
+    .home2 {
+        padding: 50px 30px 0px;
+        background-color: #fff;
+        box-shadow: 3px 3px 6px #cbced1;
+        border-radius: 8px;
+    }
+
+    .home .head {
+        color: #242F9B;
+        padding: 0;
+        border-radius: 20px;
+        letter-spacing: 1px;
+    }
+
+    .home .hr1 {
+        margin: 0 auto 40px;
+    }
+
+    .home .fa-code {
+        color: #212529;
+        margin-right: 20px;
+    }
+
+    .home .problem-head {
+        color: #212529;
+        text-decoration: none;
+        display: inline;
+        letter-spacing: .5px;
+    }
+
+    .home .problem-head:hover {
+        color: #287bfd;
+    }
+
+    .home .topic-tag {
+        text-align: right;
+        letter-spacing: .5px;
+    }
+
+</style>
+
+<div class="home">
+
+    <div class="container-fluid home1">
+        <div class="head">
+    
+            <h4>Problems</h4>
+
+        </div>
+    </div>
+
+    <div class="container-fluid home2">
+    
+        <div>
+        {% for problem in problems %}
+    
+            <div class="problem">
+    
+                <a href="{% url 'problemPage' problem.id %}" class="problem-head"> 
+                    <h5> <i class="fa fa-code"></i> {{problem.name}} </h5> 
+                </a>
+                
+                <p class="topic-tag">{{problem.topic_tag}}</p>
+                
+            </div>
+            <hr class="hr1">
+    
+        {% endfor %}
+        </div>
+    
+    </div>
+</div>
+
+{% endblock content %}
