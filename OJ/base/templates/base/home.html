@@ -31,7 +31,7 @@
     }
 
     .home .hr1 {
-        margin: 0 auto 40px;
+        margin: 0 auto 50px;
     }
 
     .home .fa-code {
@@ -55,6 +55,89 @@
         letter-spacing: .5px;
     }
 
+    .problem {
+        position: relative;
+    }
+
+    .difficulty {
+        padding: 2px 10px 4px;
+        text-align: right;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #fff;
+        border-radius: 10px;
+
+        position: absolute;
+        top: -25px; 
+        right: 0;
+    }
+
+    .diff-btns {
+        margin: 50px auto 20px;
+        text-align: right;
+    }
+
+    .diff-btn {
+        padding: 5px 50px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-decoration: none;
+    }
+
+    .easy {
+        color: #14C38E;
+        background-color: #fff;
+        border: 1px solid #14C38E;
+        border-radius: 10px 0 0 10px;
+
+        {% if request.get_full_path  == '/?q=Easy' %}
+            color: #fff;
+            background-color: #14C38E;
+        {% endif %}
+    }
+
+    .easy:hover {
+        color: #fff;
+        background-color: #14C38E;
+        transition: .2s ease-out;
+    }
+
+    .medium {
+        color: #FF8D29;
+        background-color: #fff;
+        border: 1px solid #FF8D29;
+        border-radius: 0;
+
+        {% if request.get_full_path  == '/?q=Medium' %}
+            color: #fff;
+            background-color: #FF8D29;
+        {% endif %}
+    }
+    
+    .medium:hover {
+        color: #fff;
+        background-color: #FF8D29;
+        transition: .2s ease-out;
+    }
+
+    .hard {
+        color: #EB5353;
+        background-color: #fff;
+        border: 1px solid #EB5353;
+        border-radius: 0 10px 10px 0;
+
+        {% if request.get_full_path  == '/?q=Hard' %}
+            color: #fff;
+            background-color: #EB5353;
+        {% endif %}
+    }
+    
+    .hard:hover {
+        color: #fff;
+        background-color: #EB5353;
+        transition: .2s ease-out;
+    }
+
 </style>
 
 <div class="home">
@@ -62,9 +145,15 @@
     <div class="container-fluid home1">
         <div class="head">
     
-            <h4>Problems</h4>
-
+            <h3>Problems</h3>
+            
         </div>
+    </div>
+    
+    <div class="diff-btns">
+        <a href="/?q=Easy" class="diff-btn easy">Easy</a>
+        <a href="/?q=Medium" class="diff-btn medium">Medium</a>
+        <a href="/?q=Hard" class="diff-btn hard">Hard</a>
     </div>
 
     <div class="container-fluid home2">
@@ -77,7 +166,18 @@
                 <a href="{% url 'problemPage' problem.id %}" class="problem-head"> 
                     <h5> <i class="fa fa-code"></i> {{problem.name}} </h5> 
                 </a>
-                
+
+                <p class="difficulty"
+                style=" {% if problem.difficulty == 'Easy' %}
+                            background-color: #14C38E;  
+                        {% elif problem.difficulty == 'Medium' %}
+                            background-color: #FF8D29;
+                        {% else %}
+                            background-color: #EB5353;
+                        {% endif %}">
+
+                    {{problem.difficulty}}
+                </p>
                 <p class="topic-tag">{{problem.topic_tag}}</p>
                 
             </div>
