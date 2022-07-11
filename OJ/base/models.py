@@ -20,7 +20,16 @@ class Problem(models.Model):
     def __str__(self):
         return self.name
 
+class Solution(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    verdict = models.CharField(max_length=100)
+    submitted_time = models.DateTimeField()
+    submitted_code = models.TextField()
+
+    def __str__(self):
+        return self.verdict
+    
 class TestCases(models.Model):
     input = models.TextField()
     output = models.TextField()
-    
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)

@@ -1,11 +1,16 @@
+from django import http
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Problem, TestCases
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.utils import timezone
+import os, filecmp
+# import subprocess
+
+from .models import Problem, TestCases, Solution
 
 # Create your views here.
 
@@ -75,4 +80,42 @@ def problemPage(request, pk):
     problem = Problem.objects.get(id=pk)
     context = {'problem':problem}
 
+    if request.method == 'POST':
+        code = request.FILES['solution']
+        
+        with open('/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/code-01.cpp', 'wb+') as dest:
+            for chunk in code.chunks():
+                dest.write(chunk)
+
+        os.system('g++ /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/code-01.cpp')
+        os.system('./a.out < /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/input.txt > /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt')
+
+        out1 = '/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt'  
+        out2 = '/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/oj_output.txt'   
+
+        if filecmp.cmp(out1, out2, shallow=False):
+            verdict = 'Accepted'
+        else:
+            verdict = 'Wrong Answer'
+
+        # if subprocess.call(["gcc", code]) == 0:
+        #     subprocess.call(['./a.out < /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/input.txt > /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt'])
+        #     verdict = 'Accepted'
+        # else:
+        #     verdict = 'Wrong Answer'
+
+        solution = Solution()
+        solution.verdict = verdict
+        solution.problem = Problem.objects.get(pk=pk)
+        solution.submitted_time = timezone.now()
+        # solution.save()
+
+        context = {'solution':solution}
+
+        return render(request, 'base/solution.html', context)
+        
     return render(request, 'base/problem-page.html', context)
+
+# def submitProblem(request, pk):
+
+#     return HttpResponse('')

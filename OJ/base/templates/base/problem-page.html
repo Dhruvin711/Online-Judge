@@ -64,7 +64,6 @@
 <div class="problem-page">
 
     <div class="problem">
-
         
         <p class="difficulty"
             style=" {% if problem.difficulty == 'Easy' %}
@@ -85,8 +84,12 @@
         <hr>
         <p> {{problem.desc}} </p>
 
-        <input type="file" value="upload" class="form-control upload-btn" />
-        <input type="submit" value="Submit" class="form-control submit-btn" />
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type="file" name="solution" class="form-control upload-btn" />
+            <input type="submit" value="Submit" class="form-control submit-btn" />
+        </form>
 
     </div>
 
