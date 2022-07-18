@@ -30,6 +30,6 @@ class Solution(models.Model):
         return self.verdict
     
 class TestCases(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE, null=True)
     input = models.TextField()
     output = models.TextField()
-    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)

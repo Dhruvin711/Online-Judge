@@ -7,8 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils import timezone
-import os, filecmp
-# import subprocess
+import os, filecmp, sys
+import subprocess
 
 from .models import Problem, TestCases, Solution
 
@@ -82,40 +82,57 @@ def problemPage(request, pk):
 
     if request.method == 'POST':
         code = request.FILES['solution']
-        
-        with open('/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/code-01.cpp', 'wb+') as dest:
+        submitted_code = open('base/testcases/question-1/code.cpp', 'r').read()
+
+        with open("base/testcases/question-1/code.cpp", "wb+") as f:
             for chunk in code.chunks():
-                dest.write(chunk)
+                f.write(chunk)
+        f.close()
 
-        os.system('g++ /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/code-01.cpp')
-        os.system('./a.out < /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/input.txt > /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt')
+        # Code Execution
 
-        out1 = '/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt'  
-        out2 = '/Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/oj_output.txt'   
+        command = "g++ base/testcases/question-1/code.cpp"
+        subprocess.run(command, capture_output=True, check=True)
 
-        if filecmp.cmp(out1, out2, shallow=False):
-            verdict = 'Accepted'
-        else:
-            verdict = 'Wrong Answer'
+        p = TestCases.objects.filter(problem=problem)
 
-        # if subprocess.call(["gcc", code]) == 0:
-        #     subprocess.call(['./a.out < /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/input.txt > /Users/dhruv/Desktop/Web Development/Websites/Online-Judge-Static/output.txt'])
-        #     verdict = 'Accepted'
-        # else:
-        #     verdict = 'Wrong Answer'
+        for i in range(len(p)):
+            test_input = p[i].input
+            test_output = p[i].output
+
+            try:
+                output = subprocess.run('a.exe', input = test_input, capture_output = True, text = True, check = True, timeout = 2)
+            except subprocess.TimeoutExpired:
+                verdict = "TLE"
+                submission.save()
+                break
+
+            test_output1 = "base/testcases/question-1/test_output.txt"
+            with open(test_output1, "w") as f:
+                f.write(test_output)
+            f.close()
+            
+            output1 = "base/testcases/question-1/output-1.txt"
+            with open(output1, "w") as f:
+                f.write(output.stdout)
+            f.close()
+            
+            if filecmp.cmp(output1, test_output1, shallow=False):
+                verdict = 'Accepted'
+                problem.status = True
+            else:
+                verdict = 'Wrong Answer'
+                break
 
         solution = Solution()
         solution.verdict = verdict
         solution.problem = Problem.objects.get(pk=pk)
         solution.submitted_time = timezone.now()
-        # solution.save()
+        solution.submitted_code = submitted_code
+        solution.save()
 
         context = {'solution':solution}
 
         return render(request, 'base/solution.html', context)
         
     return render(request, 'base/problem-page.html', context)
-
-# def submitProblem(request, pk):
-
-#     return HttpResponse('')
