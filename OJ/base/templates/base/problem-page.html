@@ -82,13 +82,21 @@
         <p class="topic-tag"><u>Related Topics:</u> {{problem.topic_tag}} </p>
 
         <hr>
-        <p> {{problem.desc}} </p>
+        <p> {{problem.desc|linebreaks}} </p>
+        <br>
+        <hr>
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <input type="file" name="solution" class="form-control upload-btn" />
-            <input type="submit" value="Submit" class="form-control submit-btn" />
+            <input type="file" name="solution" class="form-control upload-btn" accept=".cpp" />
+            
+            {% if request.user.is_authenticated %}
+                <input type="submit" value="Submit" class="form-control submit-btn"/>
+            {% else %}
+                <input type="submit" value="Submit" class="form-control submit-btn"
+                style="background-color: #fff; cursor: not-allowed;" disabled/>
+            {% endif %}
         </form>
 
     </div>

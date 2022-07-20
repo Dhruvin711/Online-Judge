@@ -10,5 +10,6 @@ urlpatterns = [
     path('register/', views.registerPage, name='register'),
     path('', views.home, name='home'),
     path('problems/<str:pk>/', views.problemPage, name='problemPage'),
-    # path('problems/<str:pk>/', views.submitProblem, name='solution')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
+    path('code/<str:pk>/', views.codePage, name='codePage'),
+]

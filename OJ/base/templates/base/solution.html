@@ -2,10 +2,66 @@
 
 {% block content %}
 
-    {{solution.verdict}}
+<style>
 
-    {{solution.submitted_time}}
+    .solution {
+        padding: 50px 60px;
+        margin: 100px auto 30px;
+        width: 400px;
+        text-align: center;
+        border-radius: 30px;
 
-    <!-- {{solution.submitted_code}} -->
+        {% if solution.verdict == 'Accepted' %}
+            color: #1A4D2E;
+            background-color: #B4FF9F;
+        {% else %}
+            color: #A10035;
+            background-color: #FFB4B4;
+        {% endif %}
+    }
+
+    .symbol {
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 3rem;
+        font-weight: bolder;
+        background-color: #fff;
+        border-radius: 100%;
+    }
+
+    h6 {
+        letter-spacing: .7px;
+        text-transform: capitalize;
+    }
+
+    h5 {
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    h5 a {
+        text-decoration: none;
+    }
+
+</style>
+
+<div class="solution">
+    <div class="verdict">
+        
+        {% if solution.verdict == 'Accepted' %}
+            <span class="symbol material-symbols-outlined">done</span>
+        {% else %}
+            <span class="symbol material-symbols-outlined">close</span>
+        {% endif %}
+
+        <br>
+        <h2>{{solution.verdict}}</h2>
+
+    </div>
+    
+    <h6>{{solution.submitted_time}}</h6>
+    
+</div>
+<h5>Go to <a href={% url 'leaderboard' %}>Leaderboard</a></h5>
 
 {% endblock content %}

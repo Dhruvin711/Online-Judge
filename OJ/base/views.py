@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 import os, filecmp, sys
 import subprocess
+from django.contrib.auth.decorators import login_required
 
 from .models import Problem, TestCases, Solution
 
@@ -30,6 +31,7 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
+
             return redirect('home')
         else:
             messages.error(request, 'Username OR Password is incorect')
@@ -82,7 +84,6 @@ def problemPage(request, pk):
 
     if request.method == 'POST':
         code = request.FILES['solution']
-        submitted_code = open('base/testcases/question-1/code.cpp', 'r').read()
 
         with open("base/testcases/question-1/code.cpp", "wb+") as f:
             for chunk in code.chunks():
@@ -104,7 +105,6 @@ def problemPage(request, pk):
                 output = subprocess.run('a.exe', input = test_input, capture_output = True, text = True, check = True, timeout = 2)
             except subprocess.TimeoutExpired:
                 verdict = "TLE"
-                submission.save()
                 break
 
             test_output1 = "base/testcases/question-1/test_output.txt"
@@ -119,16 +119,17 @@ def problemPage(request, pk):
             
             if filecmp.cmp(output1, test_output1, shallow=False):
                 verdict = 'Accepted'
-                problem.status = True
+                status = True
             else:
                 verdict = 'Wrong Answer'
                 break
 
         solution = Solution()
+        solution.curr_user = request.user
         solution.verdict = verdict
         solution.problem = Problem.objects.get(pk=pk)
         solution.submitted_time = timezone.now()
-        solution.submitted_code = submitted_code
+        solution.submitted_code = open('base/testcases/question-1/code.cpp', 'r').read()
         solution.save()
 
         context = {'solution':solution}
@@ -136,3 +137,18 @@ def problemPage(request, pk):
         return render(request, 'base/solution.html', context)
         
     return render(request, 'base/problem-page.html', context)
+
+def leaderboard(request):
+    submissions = Solution.objects.all()
+
+    context = {'submissions':submissions}
+
+    return render(request, 'base/leaderboard.html', context)
+
+def codePage(request, pk):
+    submission = Solution.objects.get(id=pk)
+    code = submission.submitted_code
+
+    context = {'submission':submission, 'code':code}
+
+    return render(request, 'base/code.html', context)

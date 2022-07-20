@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .codePage {
+        padding: 30px;
+    }
+
+    .code {
+        padding: 10px 30px;
+        background-color: #fff;
+        box-shadow: 3px 3px 6px #cbced1;
+        border-radius: 8px;
+    }
+
+    pre {
+        font-size: 1.1rem;
+        font-family: inherit;
+        border-radius: 8px;
+        padding: 20px 50px;
+        background-color: #D9F8C4;
+        letter-spacing: .7px;
+    }
+</style>
+
+<div class="codePage">
+    <div class="code">
+        <h5>User: <span class="text-success">{{submission.curr_user}} </span></h5>
+        <h5>Problem: <span class="text-success">{{submission.problem}} </span></h5>
+        <h5>Verdict: <span class="text-success">{{submission.verdict}} </span></h5>
+
+        <br><hr><br>
+
+        <h3><u>Code</u></h3>
+        <br>
+        
+        <pre>{{code}}</pre>
+    </div>
+</div>
+
+{% endblock content %}

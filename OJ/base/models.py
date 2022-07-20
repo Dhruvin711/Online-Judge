@@ -1,14 +1,7 @@
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 # Create your models here.
-
-class User(models.Model):
-    name = models.CharField(max_length=100)
-    rating = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
 
 class Problem(models.Model):
     name = models.CharField(max_length=100)
@@ -21,6 +14,7 @@ class Problem(models.Model):
         return self.name
 
 class Solution(models.Model):
+    curr_user = models.CharField(max_length=100, null=True)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     verdict = models.CharField(max_length=100)
     submitted_time = models.DateTimeField()
@@ -33,3 +27,6 @@ class TestCases(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE, null=True)
     input = models.TextField()
     output = models.TextField()
+
+    def __str__(self):
+        return self.problem.name

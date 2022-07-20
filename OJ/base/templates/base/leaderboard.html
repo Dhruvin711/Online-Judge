@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .submissions-page {
+        padding: 30px;
+    }
+    
+    .submissions {
+        padding: 10px 30px;
+        background-color: #fff;
+        box-shadow: 3px 3px 6px #cbced1;
+        border-radius: 8px;
+        text-transform: capitalize;
+    }
+    
+    .table a {
+        text-decoration: none;
+    }
+
+    .table thead th {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+    }
+    
+    .table th {
+        width: 0% !important;
+    }
+</style>
+
+<div class="submissions-page">
+    <div class="submissions">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col">Verdict</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions reversed%}
+                    <tr {% if submission.curr_user == user.username %} style="background-color: #D6EFED;" {% endif %}> 
+                        <td scope="row"> {{submission.id}} </td>
+                        <td scope="row"> {{submission.curr_user}} </td>
+                        <td scope="row"> <a href="{% url 'problemPage' submission.problem.id %}">{{submission.problem}}</a> </td>
+                        <td scope="row"> {{submission.verdict}} </td>
+                        <td scope="row"> <a href="{% url 'codePage' submission.id %}">code</a> </td>
+                        <td scope="row"> {{submission.submitted_time}} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+</div>
+
+{% endblock content %}
