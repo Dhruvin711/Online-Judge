@@ -3,16 +3,10 @@ using namespace std;
 int main()
 {
     int n; cin>>n;
-
-    int temp = n, rev = 0, rem;
-
-    while(temp>0){
-        rem = temp%10;
-        rev = rev*10 + rem;
-        temp /= 10;
+    for(int i=0; i<n-1; i++){
+        cout<<i<<" ";
     }
-
-    cout<<(rev == n ? 1 : 0);
-
+    cout<<n-1;
+    
     return 0;
 }

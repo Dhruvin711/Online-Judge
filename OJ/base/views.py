@@ -5,18 +5,22 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 import os, filecmp, sys
 import subprocess
-from django.contrib.auth.decorators import login_required
 
 from .models import Problem, TestCases, Solution
+from .forms import CreateUserForm
 
 # Create your views here.
 
 def loginPage(request):
     page = 'login'
+    
+    if request.user.is_authenticated:
+        return redirect('home')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -31,6 +35,8 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
+            
+            messages.success(request, 'Logged in as ' + user.username)
 
             return redirect('home')
         else:
@@ -38,7 +44,7 @@ def loginPage(request):
 
     context = {'page':page}
 
-    return render(request, 'base/login_page.html', context)
+    return render(request, 'base/login-page.html', context)
 
 def logoutUser(request):
     logout(request)
@@ -46,16 +52,21 @@ def logoutUser(request):
     return redirect('login')
 
 def registerPage(request):
-    form = UserCreationForm()
+    if request.user.is_authenticated:
+        return redirect('home')
+    
+    form = CreateUserForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CreateUserForm(request.POST)
 
         if form.is_valid():
             user = form.save(commit = False)
             user.username = user.username.lower()
             user.save()
             login(request, user)
+
+            messages.success(request, 'Account is created for ' + user.username)
 
             return redirect('home')
         
@@ -64,7 +75,7 @@ def registerPage(request):
 
     context = {'form':form}
     
-    return render(request, 'base/login_page.html', context)
+    return render(request, 'base/register-page.html', context)
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
